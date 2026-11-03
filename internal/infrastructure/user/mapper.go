@@ -1,7 +1,7 @@
 package user
 
 import (
-	"github.com/dockloud/auth/intermal/domain/user"
+	"github.com/dockloud/auth/internal/domain/user"
 )
 
 func DomainToCacheable(user user.User) *CacheableUser {

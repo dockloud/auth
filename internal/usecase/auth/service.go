@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/dockloud/auth/intermal/domain/user"
+	"github.com/dockloud/auth/internal/domain/user"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -29,7 +29,7 @@ type Service struct {
 var (
 	ErrUsernameTaken = errors.New("username already taken")
 	ErrEmailTaken    = errors.New("email already taken")
-	ErrUserNotFound  = errors.New("user not found")
+	ErrUserNotFound  = errors.New("auth not found")
 )
 
 func NewService(repository Repository) *Service {
@@ -74,7 +74,7 @@ func generateJWTToken(uid string) (*LoginOutput, error) {
 	}, nil
 }
 
-func (s *Service) Register(ctx context.Context, input RegisterInput) (*RegisterOutput, error) {
+func (s *Service) Register(ctx context.Context, input *RegisterInput) (*RegisterOutput, error) {
 	if err := user.ValidateUsername(input.Username); err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (s *Service) Register(ctx context.Context, input RegisterInput) (*RegisterO
 	}, nil
 }
 
-func (s *Service) Login(ctx context.Context, input LoginInput) (*LoginOutput, error) {
+func (s *Service) Login(ctx context.Context, input *LoginInput) (*LoginOutput, error) {
 	if err := user.ValidateEmail(input.Email); err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func (s *Service) Login(ctx context.Context, input LoginInput) (*LoginOutput, er
 	return output, nil
 }
 
-func (s *Service) Update(ctx context.Context, uid string, input UpdateInput) error {
+func (s *Service) Update(ctx context.Context, uid string, input *UpdateInput) error {
 	if err := user.ValidateUsername(*input.Username); err != nil {
 		return err
 	}

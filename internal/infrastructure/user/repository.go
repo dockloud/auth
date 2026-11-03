@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dockloud/auth/intermal/domain/user"
+	"github.com/dockloud/auth/internal/domain/user"
 	"github.com/redis/go-redis/v9"
 )
 
-const userKeyPrefix = "user"
+const userKeyPrefix = "auth"
 
 type Repository struct {
 	db    *sql.DB
@@ -41,7 +41,7 @@ func (r *Repository) Create(ctx context.Context, username string, passwordHash s
 		Scan(&u.UID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
 
 	if err != nil {
-		return nil, fmt.Errorf("error creating user: %w", err)
+		return nil, fmt.Errorf("error creating auth: %w", err)
 	}
 
 	return &u, nil
@@ -80,7 +80,7 @@ func (r *Repository) Get(ctx context.Context, uid string) (*user.User, error) {
 		Scan(&u.UID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
 
 	if err != nil {
-		return nil, fmt.Errorf("error getting user by uid: %w", err)
+		return nil, fmt.Errorf("error getting auth by uid: %w", err)
 	}
 
 	cacheableUser := DomainToCacheable(u)
@@ -118,7 +118,7 @@ func (r *Repository) Update(
 		Scan(&u.UID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
 
 	if err != nil {
-		return nil, fmt.Errorf("error updating user: %w", err)
+		return nil, fmt.Errorf("error updating auth: %w", err)
 	}
 
 	userKey := fmt.Sprintf("%s:%s", userKeyPrefix, uid)
@@ -145,7 +145,7 @@ func (r *Repository) Delete(ctx context.Context, uid string) (*user.User, error)
 		Scan(&u.UID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
 
 	if err != nil {
-		return nil, fmt.Errorf("error deleting user: %w", err)
+		return nil, fmt.Errorf("error deleting auth: %w", err)
 	}
 
 	userKey := fmt.Sprintf("%s:%s", userKeyPrefix, uid)
@@ -182,7 +182,7 @@ func (r *Repository) Search(ctx context.Context, uid *string, username *string, 
 		Scan(&u.UIDExists, &u.UsernameExists, &u.EmailExists)
 
 	if err != nil {
-		return nil, fmt.Errorf("error finding user: %w", err)
+		return nil, fmt.Errorf("error finding auth: %w", err)
 	}
 
 	return &u, nil
@@ -207,7 +207,7 @@ func (r *Repository) Authenticate(ctx context.Context, email string, passwordHas
 		Scan(&u.UID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
 
 	if err != nil {
-		return nil, fmt.Errorf("error authenticating user: %w", err)
+		return nil, fmt.Errorf("error authenticating auth: %w", err)
 	}
 
 	return &u, nil
