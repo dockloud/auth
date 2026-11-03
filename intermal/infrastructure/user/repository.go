@@ -83,7 +83,8 @@ func (r *Repository) Get(ctx context.Context, uid string) (*user.User, error) {
 		return nil, fmt.Errorf("error getting user by uid: %w", err)
 	}
 
-	marshaledUser, err := json.Marshal(u)
+	cacheableUser := DomainToCacheable(u)
+	marshaledUser, err := json.Marshal(cacheableUser)
 	if err != nil {
 		return &u, nil
 	}
