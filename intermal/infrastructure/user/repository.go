@@ -156,28 +156,57 @@ func (r *Repository) Delete(ctx context.Context, uid string) (*user.User, error)
 	return &u, nil
 }
 
-func (r *Repository) Search(ctx context.Context, username *string, email *string) (*user.SearchResult, error) {
+func (r *Repository) Search(ctx context.Context, uid *string, username *string, email *string) (*user.SearchResult, error) {
 	var u user.SearchResult
 	var err error
 
 	query := `
 	SELECT
-		EXISTS (
+	    EXISTS (
 			SELECT 1 FROM users
-			WHERE $1::text IS NOT NULL AND username = $1::text
+			WHERE $1::text IS NOT NULL AND uid = $1::text
 		) AS username_exists,
 		EXISTS (
 			SELECT 1 FROM users
-			WHERE $2::text IS NOT NULL AND email = $2::text
+			WHERE $2::text IS NOT NULL AND username = $2::text
+		) AS username_exists,
+		EXISTS (
+			SELECT 1 FROM users
+			WHERE $3::text IS NOT NULL AND email = $3::text
 		) AS email_exists;
 	`
 
 	err = r.db.
-		QueryRowContext(ctx, query, username, email).
+		QueryRowContext(ctx, query, uid, username, email).
 		Scan(&u.UIDExists, &u.UsernameExists, &u.EmailExists)
 
 	if err != nil {
 		return nil, fmt.Errorf("error finding user: %w", err)
+	}
+
+	return &u, nil
+}
+
+func (r *Repository) Authenticate(ctx context.Context, email string, passwordHash string) (*user.User, error) {
+	var err error
+	var u user.User
+
+	query := `
+		SELECT uid, username, email, password_hash, created_at 
+		FROM users
+		WHERE 
+			$1::text IS NOT NULL 
+			AND email = $1::text
+			AND $2::text IS NOT NULL 
+			AND password_hash = $2::text
+	`
+
+	err = r.db.
+		QueryRowContext(ctx, query, email, passwordHash).
+		Scan(&u.UID, &u.Username, &u.Email, &u.PasswordHash, &u.CreatedAt)
+
+	if err != nil {
+		return nil, fmt.Errorf("error authenticating user: %w", err)
 	}
 
 	return &u, nil
