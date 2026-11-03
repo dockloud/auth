@@ -7,8 +7,10 @@ import (
 	"encoding/hex"
 	"errors"
 	"os"
+	"time"
 
 	"github.com/dockloud/auth/intermal/domain/user"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type Repository interface {
@@ -44,6 +46,32 @@ func hashPassword(password string) string {
 	signatureHex := hex.EncodeToString(signatureBytes)
 
 	return signatureHex
+}
+
+func generateJWTToken(uid string) (*LoginOutput, error) {
+	secret := []byte(os.Getenv("JWT_AUTH_KEY"))
+	created := time.Now()
+	expires := created.Add(time.Hour * 2)
+	issue := "dockloud-auth"
+
+	claims := jwt.MapClaims{
+		"sub": uid,            // идентификатор
+		"iss": issue,          // кем выдан
+		"iat": created.Unix(), // когда выдан
+		"exp": expires.Unix(), // когда истекает
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(secret)
+	if err != nil {
+		return nil, err
+	}
+
+	return &LoginOutput{
+		UID:       uid,
+		JWTToken:  tokenString,
+		ExpiresAt: expires,
+	}, nil
 }
 
 func (s *Service) Register(ctx context.Context, input RegisterInput) (*RegisterOutput, error) {
@@ -91,11 +119,12 @@ func (s *Service) Login(ctx context.Context, input LoginInput) (*LoginOutput, er
 		return nil, err
 	}
 
-	return &LoginOutput{
-		UID:      u.UID,
-		Username: u.Username,
-		Email:    u.Email,
-	}, nil
+	output, err := generateJWTToken(u.UID)
+	if err != nil {
+		return nil, err
+	}
+
+	return output, nil
 }
 
 func (s *Service) Update(ctx context.Context, uid string, input UpdateInput) error {

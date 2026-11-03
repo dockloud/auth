@@ -1,5 +1,7 @@
 package user
 
+import "time"
+
 type RegisterInput struct {
 	Username string
 	Email    string
@@ -18,9 +20,9 @@ type LoginInput struct {
 }
 
 type LoginOutput struct {
-	UID      string
-	Username string
-	Email    string
+	UID       string
+	JWTToken  string
+	ExpiresAt time.Time
 }
 
 type UpdateInput struct {
