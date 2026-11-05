@@ -10,6 +10,7 @@ import (
 	"github.com/dockloud/auth/internal/infrastructure/database/postgres"
 	"github.com/dockloud/auth/internal/infrastructure/user"
 	"github.com/dockloud/auth/internal/usecase/auth"
+	userauthn "github.com/dockloud/auth/pkg/user_authn"
 	authv1 "github.com/dockloud/contract/gen/auth/v1"
 	"google.golang.org/grpc"
 )
@@ -28,12 +29,25 @@ func main() {
 	repo := user.NewRepository(db, cache)
 	service := auth.NewService(repo)
 
+	verifier, err := userauthn.NewVerifier(os.Getenv("JWT_AUTH_KEY"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	listener, err := net.Listen("tcp", ":50150")
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(
+			userauthn.UnaryServerInterceptor(
+				verifier,
+				"/dockloud.auth.v1.AuthService/Register",
+				"/dockloud.auth.v1.AuthService/Login",
+			),
+		),
+	)
 	authv1.RegisterAuthServiceServer(grpcServer, myserver.NewAuthServer(*service))
 
 	if err := grpcServer.Serve(listener); err != nil {
