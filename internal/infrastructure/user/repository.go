@@ -165,8 +165,8 @@ func (r *Repository) Search(ctx context.Context, uid *string, username *string, 
 	SELECT
 	    EXISTS (
 			SELECT 1 FROM users
-			WHERE $1::text IS NOT NULL AND uid = $1::text
-		) AS username_exists,
+			WHERE $1::uuid IS NOT NULL AND uid = $1::uuid
+		) AS uid_exists,
 		EXISTS (
 			SELECT 1 FROM users
 			WHERE $2::text IS NOT NULL AND username = $2::text
