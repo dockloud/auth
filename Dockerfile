@@ -8,14 +8,16 @@ RUN apk add --no-cache wget
 
 COPY . .
 
-RUN go build -o /app/auth-bin ./cmd/app
+RUN CGO_ENABLED=0 go build -o /app/auth ./cmd/app
+RUN CGO_ENABLED=0 go build -o /app/migrate ./cmd/migrate
 
 FROM alpine:latest
 
 WORKDIR /app
 
-COPY --from=builder /app/auth-bin ./
+COPY --from=builder /app/auth ./auth
+COPY --from=builder /app/migrate ./migrate
 
 EXPOSE 50150
 
-CMD ["./auth-bin"]
+CMD ["./auth"]
