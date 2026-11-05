@@ -1,7 +1,7 @@
 name: Go CI Workflow
 
 env:
-  MODULE_NAME: "dockloud-auth"
+  MODULE_NAME: "auth"
   MODULE_VER: "v1.0"
 
 on:
@@ -46,17 +46,17 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
         run: |
           docker build \
             --file Dockerfile \
-            --tag ghcr.io/pkab00/${{ env.MODULE_NAME }}:${{ env.MODULE_VER }} \
+            --tag ghcr.io/dockloud/${{ env.MODULE_NAME }}:${{ env.MODULE_VER }} \
             .
 
       - name: Push Docker image
-        run: docker push ghcr.io/pkab00/${{ env.MODULE_NAME }}:${{ env.MODULE_VER }}
+        run: docker push ghcr.io/dockloud/${{ env.MODULE_NAME }}:${{ env.MODULE_VER }}
 
   #deploy:
