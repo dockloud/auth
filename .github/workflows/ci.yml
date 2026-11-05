@@ -2,7 +2,7 @@ name: Go CI Workflow
 
 env:
   MODULE_NAME: "auth"
-  MODULE_VER: "v1.0"
+  MODULE_VER: "v1.1"
 
 on:
   push:
