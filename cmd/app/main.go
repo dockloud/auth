@@ -43,8 +43,8 @@ func main() {
 		grpc.UnaryInterceptor(
 			userauthn.UnaryServerInterceptor(
 				verifier,
-				"/dockloud.auth.v1.AuthService/Register",
-				"/dockloud.auth.v1.AuthService/Login",
+				"/auth.v1.AuthService/Register",
+				"/auth.v1.AuthService/Login",
 			),
 		),
 	)
