@@ -128,14 +128,20 @@ func (s *Service) Login(ctx context.Context, input *LoginInput) (*LoginOutput, e
 }
 
 func (s *Service) Update(ctx context.Context, uid string, input *UpdateInput) error {
-	if err := user.ValidateUsername(*input.Username); err != nil {
-		return err
+	if input.Username != nil {
+		if err := user.ValidateUsername(*input.Username); err != nil {
+			return err
+		}
 	}
-	if err := user.ValidateEmail(*input.Email); err != nil {
-		return err
+	if input.Email != nil {
+		if err := user.ValidateEmail(*input.Email); err != nil {
+			return err
+		}
 	}
-	if err := user.ValidatePassword(*input.Password); err != nil {
-		return err
+	if input.Password != nil {
+		if err := user.ValidatePassword(*input.Password); err != nil {
+			return err
+		}
 	}
 
 	_, err := s.repository.Update(ctx, uid, input.Username, input.Email, input.Password)
