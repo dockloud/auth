@@ -22,7 +22,7 @@ func ToLoginInput(request *authv1.LoginRequest) *auth.LoginInput {
 	}
 }
 
-func ToUpdateInput(request *authv1.UpdateRequest) (*auth.UpdateInput, UID) {
+func ToUpdateInput(request *authv1.UpdateUserRequest) (*auth.UpdateInput, UID) {
 	return &auth.UpdateInput{
 		Username: request.Username,
 		Email:    request.Email,
@@ -30,6 +30,6 @@ func ToUpdateInput(request *authv1.UpdateRequest) (*auth.UpdateInput, UID) {
 	}, UID(request.Uid)
 }
 
-func ToDeleteInput(request *authv1.DeleteRequest) UID {
+func ToDeleteInput(request *authv1.DeleteUserRequest) UID {
 	return UID(request.Uid)
 }

@@ -50,7 +50,7 @@ func (s *authServer) Login(ctx context.Context, req *authv1.LoginRequest) (*auth
 	return mapper.ToLoginResponse(res), nil
 }
 
-func (s *authServer) Update(ctx context.Context, req *authv1.UpdateRequest) (*authv1.UpdateResponse, error) {
+func (s *authServer) Update(ctx context.Context, req *authv1.UpdateUserRequest) (*authv1.UpdateUserResponse, error) {
 	s.logger.Printf("Received UpdateRequest %+v", req)
 
 	input, uid := mapper.ToUpdateInput(req)
@@ -61,10 +61,10 @@ func (s *authServer) Update(ctx context.Context, req *authv1.UpdateRequest) (*au
 		return nil, err
 	}
 
-	return &authv1.UpdateResponse{}, nil
+	return &authv1.UpdateUserResponse{}, nil
 }
 
-func (s *authServer) Delete(ctx context.Context, req *authv1.DeleteRequest) (*authv1.DeleteResponse, error) {
+func (s *authServer) Delete(ctx context.Context, req *authv1.DeleteUserRequest) (*authv1.DeleteUserResponse, error) {
 	s.logger.Printf("Received DeleteRequest %+v", req)
 
 	input := mapper.ToDeleteInput(req)
@@ -75,5 +75,5 @@ func (s *authServer) Delete(ctx context.Context, req *authv1.DeleteRequest) (*au
 		return nil, err
 	}
 
-	return &authv1.DeleteResponse{}, nil
+	return &authv1.DeleteUserResponse{}, nil
 }

@@ -3,7 +3,7 @@ module github.com/dockloud/auth
 go 1.27.1
 
 require (
-	github.com/dockloud/contract v0.0.0-20261103080613-732bdcbbe415
+	github.com/dockloud/contract v0.0.0-20261107064559-bd0bbb8fae7c
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/golang/mock v1.6.0
 	github.com/lib/pq v1.12.3
@@ -23,5 +23,5 @@ require (
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20261026165753-2ffab32bce7e // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20261104224025-d1e00e9f33ab // indirect
 )
