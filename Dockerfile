@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN apk add --no-cache git
 RUN go mod download
 
-COPY --from=ghcr.io/grpc-ecosystem/grpc-health-probe:v0.4.61 /ko-app/grpc-health-probe /bin/grpc_health_probe
+COPY --from=ghcr.io/grpc-ecosystem/grpc-health-probe:v0.4.61 /ko-app/grpc-health-probe /app/grpc_health_probe
 
 COPY . .
 
@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY --from=builder /app/auth ./auth
 COPY --from=builder /app/migrate ./migrate
-COPY --from=builder /bin/grpc_health_probe /bin/grpc_health_probe
+COPY --from=builder /app/grpc_health_probe /bin/grpc_health_probe
 
 EXPOSE 50150
 
