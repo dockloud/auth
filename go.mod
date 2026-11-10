@@ -1,9 +1,10 @@
 module github.com/dockloud/auth
 
-go 1.27.1
+go 1.27.3
 
 require (
-	github.com/dockloud/contract v0.0.0-20261107064559-bd0bbb8fae7c
+	github.com/dockloud/contract v0.0.0-20261109051604-d14e4073518a
+	github.com/dockloud/user-auth v0.0.0-20261109073357-81a8c4f1d611
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/golang/mock v1.6.0
 	github.com/lib/pq v1.12.3
@@ -15,6 +16,7 @@ require (
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.33.0 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
 	github.com/sethvargo/go-retry v0.5.0 // indirect
 	go.uber.org/atomic v1.12.0 // indirect
@@ -23,5 +25,6 @@ require (
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20261104224025-d1e00e9f33ab // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20261104224025-d1e00e9f33ab // indirect
 )

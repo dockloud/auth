@@ -13,6 +13,8 @@ import (
 	userauthn "github.com/dockloud/auth/pkg/user_authn"
 	authv1 "github.com/dockloud/contract/gen/auth/v1"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 func main() {
@@ -48,6 +50,11 @@ func main() {
 			),
 		),
 	)
+
+	healthServer := health.NewServer()
+	healthpb.RegisterHealthServer(grpcServer, healthServer)
+	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+
 	authv1.RegisterAuthServiceServer(grpcServer, myserver.NewAuthServer(*service))
 
 	if err := grpcServer.Serve(listener); err != nil {

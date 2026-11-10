@@ -2,12 +2,16 @@ package grpc
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/dockloud/auth/internal/delivery/mapper"
 	"github.com/dockloud/auth/internal/usecase/auth"
 	authv1 "github.com/dockloud/contract/gen/auth/v1"
+	"github.com/dockloud/user-auth/pkg/transport/grpc/metadata"
 )
+
+var ErrNoUIDPassed = errors.New("no UID passed")
 
 type authServer struct {
 	authv1.UnimplementedAuthServiceServer
@@ -53,9 +57,14 @@ func (s *authServer) Login(ctx context.Context, req *authv1.LoginRequest) (*auth
 func (s *authServer) Update(ctx context.Context, req *authv1.UpdateUserRequest) (*authv1.UpdateUserResponse, error) {
 	s.logger.Printf("Received UpdateRequest %+v", req)
 
-	input, uid := mapper.ToUpdateInput(req)
-	err := s.service.Update(ctx, string(uid), input)
+	input := mapper.ToUpdateInput(req)
+	uid, ok := metadata.GetUIDFromMetadata(ctx)
+	if !ok {
+		s.logger.Printf("Failed to update %+v", req)
+		return nil, ErrNoUIDPassed
+	}
 
+	err := s.service.Update(ctx, uid, input)
 	if err != nil {
 		s.logger.Printf("Failed to update %+v", req)
 		return nil, err
@@ -67,9 +76,13 @@ func (s *authServer) Update(ctx context.Context, req *authv1.UpdateUserRequest) 
 func (s *authServer) Delete(ctx context.Context, req *authv1.DeleteUserRequest) (*authv1.DeleteUserResponse, error) {
 	s.logger.Printf("Received DeleteRequest %+v", req)
 
-	input := mapper.ToDeleteInput(req)
-	err := s.service.Delete(ctx, string(input))
+	uid, ok := metadata.GetUIDFromMetadata(ctx)
+	if !ok {
+		s.logger.Printf("Failed to delete %+v", req)
+		return nil, ErrNoUIDPassed
+	}
 
+	err := s.service.Delete(ctx, uid)
 	if err != nil {
 		s.logger.Printf("Failed to delete %+v", req)
 		return nil, err
