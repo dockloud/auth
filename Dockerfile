@@ -19,7 +19,7 @@ WORKDIR /app
 
 COPY --from=builder /app/auth ./auth
 COPY --from=builder /app/migrate ./migrate
-COPY --from=builder /app/grpc_health_probe /bin/grpc_health_probe
+COPY --from=builder /app/grpc_health_probe ./grpc_health_probe
 
 EXPOSE 50150
 
