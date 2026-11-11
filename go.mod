@@ -4,6 +4,7 @@ go 1.27.3
 
 require (
 	github.com/dockloud/contract v0.0.0-20261109051604-d14e4073518a
+	github.com/dockloud/service-auth v0.0.0-20261111043837-db5419a71a29
 	github.com/dockloud/user-auth v0.0.0-20261109073357-81a8c4f1d611
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/golang/mock v1.6.0
@@ -22,9 +23,9 @@ require (
 	go.uber.org/atomic v1.12.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/net v0.62.0 // indirect
-	golang.org/x/sync v0.24.0 // indirect
-	golang.org/x/sys v0.49.0 // indirect
-	golang.org/x/text v0.43.0 // indirect
+	golang.org/x/sync v0.25.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
+	golang.org/x/text v0.44.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20261104224025-d1e00e9f33ab // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20261104224025-d1e00e9f33ab // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20261110000943-09e21b237f2c // indirect
 )

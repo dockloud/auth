@@ -6,6 +6,7 @@ import (
 	"os"
 
 	myserver "github.com/dockloud/auth/internal/delivery/grpc"
+	serviceauth "github.com/dockloud/auth/internal/delivery/grpc/auth"
 	"github.com/dockloud/auth/internal/infrastructure/cache/redis"
 	"github.com/dockloud/auth/internal/infrastructure/database/postgres"
 	"github.com/dockloud/auth/internal/infrastructure/user"
@@ -35,7 +36,19 @@ func main() {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	keyring := serviceauth.Keyring{
+		"gateway-key": {
+			ID:      "dck-gateway-v1",
+			Service: "dockloud-gateway",
+			Secret:  []byte(os.Getenv("GATEWAY_SERVICE_KEY")),
+		},
+	}
+	interceptor, err := serviceauth.NewKeyringInterceptor(keyring)
+	if err != nil {
+		log.Fatalf("failed to create interceptor: %v", err)
+	}
+
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(interceptor))
 	healthServer := health.NewServer()
 
 	healthpb.RegisterHealthServer(grpcServer, healthServer)
