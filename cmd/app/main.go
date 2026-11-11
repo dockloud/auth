@@ -37,7 +37,7 @@ func main() {
 	}
 
 	keyring := serviceauth.Keyring{
-		"gateway-key": {
+		"dck-gateway-v1": {
 			ID:      "dck-gateway-v1",
 			Service: "dockloud-gateway",
 			Secret:  []byte(os.Getenv("GATEWAY_SERVICE_KEY")),
